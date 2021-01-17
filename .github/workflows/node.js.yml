@@ -58,7 +58,7 @@ jobs:
           APP_TWITTER_TOKEN_KEY: ${{ secrets.APP_TWITTER_TOKEN_KEY}}
           APP_TWITTER_TOKEN_SECRET: ${{ secrets.APP_TWITTER_TOKEN_SECRET}}
           APP_TWITTER_BOT_ACCOUNT_ID: ${{ secrets.APP_TWITTER_BOT_ACCOUNT_ID}}
-
+          
       - name: Deploy App to GAE
-          run: gcloud app deploy
-        - run: rm -f app.yaml
+        run: gcloud app deploy
+        run: rm -f app.yaml
