@@ -1,6 +1,6 @@
 const fs = require("fs");
 
-const template = readFileSync("app.template.yaml").toString();
+const template = fs.readFileSync("app.template.yaml").toString();
 let content = template;
 
 for (const match of template.matchAll(/\${{([A-Z_]*)}}/g)) {
