@@ -13,10 +13,12 @@ jobs:
         node-version: [12.x]
     steps:
       - uses: actions/checkout@v2
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
+
       - name: yarn install, and test
         run: |
           yarn
@@ -24,19 +26,31 @@ jobs:
         env:
           CI: true
   build:
-    needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
       - name: yarn install and build
         run: |
           yarn
           yarn build
+
+      - name: upload dist
+        uses: actions/upload-artifact@main
+          with:
+            name: dist
+            path: dist
   deploy:
     needs: [test, build]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+
+      - name: douwnload dist
+        uses: actions/download-artifact@main
+        with:
+          name: dist
+          path: dist
 
       - name: Set up Cloud SDK
         uses: google-github-actions/setup-gcloud@master
