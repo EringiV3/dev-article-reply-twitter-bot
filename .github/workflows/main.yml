@@ -64,6 +64,8 @@ jobs:
           export_default_credentials: true
 
       - name: deploy to GCE
-        run: gcloud compute instances update-container $GCP_PROJECT_ID --container-image $IMAGE
+        run: gcloud compute instances update-container $GCP_PROJECT_ID \
+          --container-image $IMAGE \
+          --zone us-west1-b
         env:
           GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
