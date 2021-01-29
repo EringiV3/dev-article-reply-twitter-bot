@@ -13,7 +13,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node-version: [12.x]
+        node-version: [14.x]
     steps:
       - name: checkout the repository
         uses: actions/checkout@v2
@@ -63,9 +63,14 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
 
+      - name: set project
+        run: gcloud config set $GCP_PROJECT_ID
+        env:
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+
       - name: deploy to GCE
         run: gcloud compute instances update-container $GCP_PROJECT_ID \
           --container-image $IMAGE \
-          --zone us-west1-b
+          --zone=us-west1-b
         env:
           GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
