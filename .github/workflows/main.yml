@@ -69,8 +69,6 @@ jobs:
           GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
 
       - name: deploy to GCE
-        run: gcloud compute instances update-container $GCP_PROJECT_ID \
-          --container-image $IMAGE \
-          --zone=us-west1-b
+        run: gcloud compute instances update-container $GCP_PROJECT_ID --container-image $IMAGE --zone=us-west1-b
         env:
           GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
