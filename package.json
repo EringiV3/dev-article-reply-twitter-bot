@@ -1,5 +1,5 @@
 {
-  "name": "typescript-node-base",
+  "name": "dev-article-reply-twitter-bot",
   "version": "0.1.0",
   "description": "",
   "main": "dist/index.js",
@@ -14,7 +14,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@types/jest": "^26.0.20",
     "@types/node": "^12.12.54",

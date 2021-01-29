@@ -1,0 +1,71 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [master]
+
+env:
+  IMAGE: asia.gcr.io/dev-article-twitter-bot/app:${{ github.sha }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node-version: [12.x]
+    steps:
+      - name: checkout the repository
+        uses: actions/checkout@v2
+
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: yarn install, and test
+        run: |
+          yarn
+          yarn test
+        env:
+          CI: true
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout the repository
+        uses: actions/checkout@v2
+
+      - name: set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name: configure docker to use the gcloud cli
+        run: gcloud auth configure-docker --quiet
+
+      - name: build a docker image
+        run: docker build . -t $IMAGE
+
+      - name: push the docker image
+        run: docker push $IMAGE
+
+  deploy:
+    needs: [test, build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@master
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name: deploy to GCE
+        run: |
+          gcloud compute instances update-container $GCP_PROJECT_ID \
+          -—container-image $IMAGE
+        env:
+          GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}

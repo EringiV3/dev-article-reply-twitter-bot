@@ -6,7 +6,10 @@ import { getDevArticleTweetText } from "./devTo";
 
 const main = () => {
   const searchText = process.env.TWITTER_BOT_ACCOUNT_ID;
-  if (!searchText) return;
+  if (!searchText) {
+    console.error("searchTextが未定義です。");
+    return;
+  }
   client.stream("statuses/filter", { track: searchText }, (stream) => {
     stream.on("data", async (tweet) => {
       const keyword = getKeywordFromTweet(tweet.text, searchText);
